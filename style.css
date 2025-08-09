@@ -1,0 +1,250 @@
+/* ==========================
+   Global Styles
+========================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(120deg, #0a0a0a, #1a1a1a);
+    color: white;
+    overflow-x: hidden;
+}
+
+/* Canvas background animation */
+#bgCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle at center, #111 0%, #000 100%);
+}
+
+/* ==========================
+   Sidebar Styles
+========================== */
+.sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 220px;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    -webkit-backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    transition: width 0.3s;
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar .logo {
+    font-size: 28px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #00f5ff;
+}
+
+.sidebar .menu button {
+    background: none;
+    border: none;
+    color: white;
+    text-align: left;
+    padding: 12px 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.sidebar .menu button:hover {
+    background: rgba(0, 245, 255, 0.2);
+    color: #00f5ff;
+    padding-left: 30px;
+}
+
+/* ==========================
+   Main Content / Dashboard
+========================== */
+.main-content {
+    margin-left: 240px;
+    padding: 40px;
+    min-height: 100vh;
+    transition: margin 0.3s;
+}
+
+.main-content h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.main-content h1 span {
+    color: #00f5ff;
+}
+
+.hint {
+    color: #bbb;
+    margin-top: 5px;
+}
+
+/* ==========================
+   Feature Sections
+========================== */
+.feature-section {
+    display: none;
+    margin-left: 240px;
+    padding: 40px;
+    min-height: 100vh;
+    transition: 0.3s;
+}
+
+.glass-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 30px;
+    border: 1px solid rgba(255,255,255,0.1);
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+input, select, button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+input, select {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.glass-btn {
+    background: linear-gradient(120deg, #00f5ff, #0077ff);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.glass-btn:hover {
+    background: linear-gradient(120deg, #00d4ff, #005fff);
+}
+
+.back-btn {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    margin-top: 20px;
+}
+
+.back-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.output {
+    background: rgba(0,0,0,0.4);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    min-height: 60px;
+    border: 1px solid rgba(255,255,255,0.05);
+    white-space: pre-wrap;
+}
+
+/* ==========================
+   Waveform Animation
+========================== */
+.waveform {
+    display: none;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 3px;
+    margin: 10px 0;
+    height: 30px;
+}
+
+.waveform span {
+    width: 5px;
+    background: #00f5ff;
+    animation: wave 1s infinite ease-in-out;
+}
+
+.waveform span:nth-child(1){ animation-delay: 0s; }
+.waveform span:nth-child(2){ animation-delay: 0.2s; }
+.waveform span:nth-child(3){ animation-delay: 0.4s; }
+.waveform span:nth-child(4){ animation-delay: 0.6s; }
+.waveform span:nth-child(5){ animation-delay: 0.8s; }
+
+@keyframes wave {
+    0%, 100% { height: 5px; }
+    50% { height: 30px; }
+}
+
+/* Voice Controls */
+.voice-controls {
+    display: none;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.voice-controls button {
+    background: rgba(0,0,0,0.4);
+    padding: 8px 15px;
+    border-radius: 6px;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.voice-controls button:hover {
+    background: rgba(0,0,0,0.7);
+}
+
+/* ==========================
+   Responsive Design
+========================== */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+    .sidebar .menu button {
+        justify-content: center;
+        font-size: 0;
+    }
+    .sidebar .menu button i {
+        font-size: 20px;
+    }
+    .main-content, .feature-section {
+        margin-left: 80px;
+        padding: 20px;
+    }
+}
+footer {
+    background: rgba(0,0,0,0.5);
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
