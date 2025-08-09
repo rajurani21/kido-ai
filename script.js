@@ -3,7 +3,7 @@
 // ==========================
 
 // Use your deployed backend endpoint here:
-const API_URL = "https://us-central1-sahayak-ai-84f66.cloudfunctions.net/api/generate-content";
+const API_URL = "https://kido-ai-797989395382.asia-south1.run.app/generate-content";
 
 // Particle background setup
 const canvas = document.getElementById("bgCanvas");
@@ -259,4 +259,5 @@ function generateReadingAssessment() {
 }
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
+
 });
