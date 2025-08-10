@@ -1,4 +1,20 @@
 // =======================
+// Typing Animation Function
+// =======================
+function typeText(element, text, speed = 20) {
+    element.innerHTML = "";
+    let i = 0;
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+    typing();
+}
+
+// =======================
 // UI Navigation
 // =======================
 function openFeature(featureId) {
@@ -24,9 +40,9 @@ function generateContentGenerator() {
     const grade = document.getElementById("cg-grade").value;
     const output = document.getElementById("cg-output");
 
-    output.innerHTML = `<strong>Generating content...</strong>`;
+    typeText(output, `Generating content for "${topic}" (Grade ${grade})...`);
     setTimeout(() => {
-        output.innerHTML = `Here’s AI-generated content for <b>${topic}</b> (Grade ${grade}).`;
+        typeText(output, `Here’s AI-generated content for <b>${topic}</b> (Grade ${grade}).`);
     }, 1000);
 }
 
@@ -39,9 +55,9 @@ function generateWorksheet() {
     const num = document.getElementById("ws-questions").value;
     const output = document.getElementById("ws-output");
 
-    output.innerHTML = `<strong>Generating worksheet...</strong>`;
+    typeText(output, `Creating worksheet for "${topic}"...`);
     setTimeout(() => {
-        output.innerHTML = `Worksheet on <b>${topic}</b> for Grade ${grade} with ${num} questions.`;
+        typeText(output, `Worksheet on <b>${topic}</b> for Grade ${grade} with ${num} questions.`);
     }, 1000);
 }
 
@@ -52,9 +68,9 @@ function generateKnowledgeBase() {
     const question = document.getElementById("kb-question").value;
     const output = document.getElementById("kb-output");
 
-    output.innerHTML = `<strong>Searching knowledge base...</strong>`;
+    typeText(output, `Searching knowledge base...`);
     setTimeout(() => {
-        output.innerHTML = `Answer to your question: <b>${question}</b>.`;
+        typeText(output, `Answer to your question: <b>${question}</b>.`);
     }, 1000);
 }
 
@@ -65,9 +81,9 @@ function generateVisualAid() {
     const topic = document.getElementById("va-topic").value;
     const output = document.getElementById("va-output");
 
-    output.innerHTML = `<strong>Designing visual aid...</strong>`;
+    typeText(output, `Designing visual aid for "${topic}"...`);
     setTimeout(() => {
-        output.innerHTML = `Generated a visual representation for <b>${topic}</b>.`;
+        typeText(output, `Generated a visual representation for <b>${topic}</b>.`);
     }, 1000);
 }
 
@@ -78,16 +94,20 @@ let isSpeaking = false;
 
 function generateReadingAssessment() {
     const topic = document.getElementById("ra-topic").value;
-    const lang = document.getElementById("ra-lang").value;
     const voice = document.getElementById("ra-voice").value === "male" ? "UK English Male" : "UK English Female";
     const volume = document.getElementById("ra-volume").value;
 
-    document.getElementById("ra-output").innerHTML = `Reading passage on: <b>${topic}</b>`;
+    const output = document.getElementById("ra-output");
+    typeText(output, `Generating reading passage for "${topic}"...`);
+
     document.getElementById("voice-controls").style.display = "block";
     document.getElementById("waveform").style.display = "block";
 
-    responsiveVoice.speak(`Reading passage for ${topic}`, voice, { volume: parseFloat(volume), rate: 1 });
-    isSpeaking = true;
+    setTimeout(() => {
+        typeText(output, `Reading passage on: <b>${topic}</b>`);
+        responsiveVoice.speak(`Reading passage for ${topic}`, voice, { volume: parseFloat(volume), rate: 1 });
+        isSpeaking = true;
+    }, 1000);
 }
 
 function toggleSpeech() {
@@ -117,9 +137,9 @@ function generateLessonPlanner() {
     const subject = document.getElementById("lp-subject").value;
     const output = document.getElementById("lp-output");
 
-    output.innerHTML = `<strong>Generating lesson plan...</strong>`;
+    typeText(output, `Creating lesson plan for "${subject}"...`);
     setTimeout(() => {
-        output.innerHTML = `Lesson plan for Grade ${grade} on ${subject}.`;
+        typeText(output, `Lesson plan for Grade ${grade} on ${subject}.`);
     }, 1000);
 }
 
