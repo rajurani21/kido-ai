@@ -39,7 +39,7 @@ class Particle {
 
 const particles = Array.from({ length: 100 }, () => new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
 
-function connectParticles() {
+async function connectParticles() {
   for (let a = 0; a < particles.length; a++) {
     for (let b = a + 1; b < particles.length; b++) {
       const dx = particles[a].x - particles[b].x;
@@ -79,12 +79,12 @@ window.addEventListener("resize", () => {
 });
 
 // Sidebar Navigation
-function openFeature(id) {
+async function openFeature(id) {
   document.getElementById("dashboard").style.display = "none";
   document.querySelectorAll(".feature-section").forEach(div => div.style.display = "none");
   document.getElementById(id).style.display = "block";
 }
-function goBack() {
+async function goBack() {
   document.querySelectorAll(".feature-section").forEach(div => div.style.display = "none");
   document.getElementById("dashboard").style.display = "block";
 }
@@ -269,5 +269,6 @@ async function generateLessonPlanner() {
   const result = await realAIResponse(`Create a weekly lesson plan for grade ${grade} in ${subject}`);
   outputDiv.innerText = result;
 }
+
 
 
