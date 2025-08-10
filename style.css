@@ -366,3 +366,36 @@ footer {
   animation: none;
   opacity: 0;
 }
+body {
+  animation: glitchLoad 1s ease forwards;
+  color: white;
+  background: black;
+}
+
+@keyframes glitchLoad {
+  0% {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+  }
+  20% {
+    clip-path: inset(10% 0 80% 0);
+    opacity: 1;
+  }
+  40% {
+    clip-path: inset(30% 0 60% 0);
+    opacity: 1;
+  }
+  60% {
+    clip-path: inset(10% 0 80% 0);
+    opacity: 1;
+  }
+  80% {
+    clip-path: inset(0 0 100% 0);
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
