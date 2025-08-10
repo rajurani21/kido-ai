@@ -248,3 +248,15 @@ footer {
     bottom: 0;
     width: 100%;
 }
+.typing-cursor {
+    display: inline-block;
+    animation: blink 0.7s infinite;
+    font-weight: bold;
+}
+@keyframes blink {
+    50% { opacity: 0; }
+}
+.typing-cursor.done {
+    animation: none;
+    opacity: 0;
+}
