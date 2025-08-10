@@ -80,42 +80,35 @@
   </div>
 
   <!-- Reading Assessment -->
-  <div id="reading-section" class="feature-section glass-card">
-    <h2>📖 Reading Assessment</h2>
-    <input type="text" id="ra-topic" placeholder="Enter topic" />
-    <input type="text" id="ra-lang" placeholder="Enter language code (en-US, hi-IN, te-IN)" />
-    <label for="ra-voice">Select Voice:</label>
-    <select id="ra-voice">
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-    </select>
-    <label for="ra-volume">Volume:</label>
-    <input type="range" id="ra-volume" min="0" max="1" step="0.1" value="1" title="Adjust volume" />
-    <button class="glass-btn" onclick="generateReadingAssessment()">Generate & Speak</button>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+  <!-- Reading Assessment -->
+<div id="reading-section" class="feature-section glass-card">
+  <h2>📖 Reading Assessment</h2>
+  <input type="text" id="ra-topic" placeholder="Enter topic" />
+  <input type="text" id="ra-lang" placeholder="Enter language code (en-US, hi-IN, te-IN)" />
+  <label for="ra-voice">Select Voice:</label>
+  <select id="ra-voice">
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+  </select>
+  <label for="ra-volume">Volume:</label>
+  <input type="range" id="ra-volume" min="0" max="1" step="0.1" value="1" title="Adjust volume" />
+  <button class="glass-btn" onclick="generateReadingAssessment()">Generate & Speak</button>
+  <button class="back-btn" onclick="goBack()">⬅ Back</button>
 
-    <div id="ra-output" class="output"></div>
-    <!-- ResponsiveVoice for Text-to-Speech -->
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=AIzaSyAcvfF7gz8fYJqKPdJsvBER4WNg2OezOLc
-"></script>
+  <div id="ra-output" class="output"></div>
 
-<!-- Waveform & Controls -->
-<div id="voice-controls" style="display:none;">
-  <button onclick="toggleSpeech()" id="ra-toggle">⏸ Pause</button>
-  <button onclick="stopSpeech()">⏹ Stop</button>
-</div>
-<div id="waveform" style="display:none;">🔊 Speaking...</div>
-
-
-    <div class="waveform" id="waveform">
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
-
-    <div id="voice-controls" class="voice-controls">
-      <button id="ra-toggle" onclick="toggleSpeech()">⏸ Pause</button>
-      <button onclick="stopSpeech()">⏹ Stop</button>
-    </div>
+  <!-- Waveform Animation -->
+  <div class="waveform" id="waveform" style="display:none;">
+    <span></span><span></span><span></span><span></span><span></span>
   </div>
+
+  <!-- Voice Controls -->
+  <div class="voice-controls" style="display:none;">
+    <button id="ra-toggle" class="btn control-btn" onclick="toggleSpeech()">⏸ Pause</button>
+    <button class="btn control-btn stop-btn" onclick="stopSpeech()">⏹ Stop</button>
+  </div>
+</div>
+
 
   <!-- Lesson Planner -->
   <div id="lesson-section" class="feature-section glass-card">
@@ -163,4 +156,5 @@ startTypingEffect("test-output", "Hello, this is a typing animation!", 50);
   <p class="footer-text">© 2024 KIDO AI. All rights reserved.</p>
 </footer>
 </html>
+
 
