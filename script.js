@@ -1,8 +1,8 @@
-// =====================================
-//  kido-ai AI Frontend Script
+
+    // =====================================
+//  Sahayak AI Frontend Script
 //  Connected to Gemini Backend
 // =====================================
-
 
 // ===== Backend Connection =====
 async function realAIResponse(prompt) {
@@ -181,7 +181,4 @@ async function generateLessonPlanner() {
   const result = await realAIResponse(`Create a weekly lesson plan for grade ${grade} in ${subject}`);
   outputDiv.innerText = result;
 }
-
-
-
-
+ 
