@@ -107,7 +107,12 @@ async function generateVisualAid() {
 }
 
 // 5️⃣ Reading Assessment (Speech)
+// 5️⃣ Reading Assessment (Speech)
+let speechSynthesisUtterance = null;
+let isPaused = false;
+
 async function generateReadingAssessment() {
+  // In HTML you have id="ra-topic" and "ra-lang", no "ra-grade"
   const topic = document.getElementById("ra-topic").value.trim();
   const lang = document.getElementById("ra-lang").value.trim() || "en-US";
   const voiceType = document.getElementById("ra-voice").value;
@@ -121,34 +126,18 @@ async function generateReadingAssessment() {
   }
 
   outputDiv.innerText = "⏳ Preparing reading assessment...";
-
-  // Extract language code (e.g., en-US -> English, hi-IN -> Hindi, te-IN -> Telugu)
-  // You might want a small map of language codes to language names:
-  const languageMap = {
-    "en-US": "English",
-    "hi-IN": "Hindi",
-    "te-IN": "Telugu",
-    "es-ES": "Spanish",
-    "fr-FR": "French",
-    // add more as needed
-  };
-
-  const languageName = languageMap[lang] || "English"; // fallback to English if unknown
-
-  // Updated prompt includes language info
-  const prompt = `Generate a short reading passage in ${languageName} for topic: ${topic}`;
-
+  const prompt = `Generate a short reading passage for topic: ${topic}`;
   const text = await realAIResponse(prompt);
   outputDiv.innerText = text;
 
-  // Speech synthesis code (unchanged) ...
+  // Cancel any ongoing speech
   speechSynthesis.cancel();
 
   speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
   speechSynthesisUtterance.lang = lang;
   speechSynthesisUtterance.volume = volume;
 
-  // Wait for voices to load (same as your code) ...
+  // Wait for voices to be loaded
   let voices = speechSynthesis.getVoices();
   if (!voices.length) {
     await new Promise(resolve => {
@@ -169,11 +158,32 @@ async function generateReadingAssessment() {
 
   speechSynthesis.speak(speechSynthesisUtterance);
 
-  // Show voice controls and waveform
+  // Show voice controls
   document.querySelector(".voice-controls").style.display = "flex";
   document.querySelector(".waveform").style.display = "flex";
 }
 
+function toggleSpeech() {
+  if (!speechSynthesisUtterance) return;
+
+  if (!isPaused) {
+    speechSynthesis.pause();
+    document.getElementById("ra-toggle").innerText = "▶ Resume";
+  } else {
+    speechSynthesis.resume();
+    document.getElementById("ra-toggle").innerText = "⏸ Pause";
+  }
+  isPaused = !isPaused;
+}
+
+function stopSpeech() {
+  speechSynthesis.cancel();
+  isPaused = false;
+  document.getElementById("ra-toggle").innerText = "⏸ Pause";
+  // Hide voice controls and waveform
+  document.querySelector(".voice-controls").style.display = "none";
+  document.querySelector(".waveform").style.display = "none";
+}
 // 6️⃣ Lesson Planner
 async function generateLessonPlanner() {
   const grade = document.getElementById("lp-grade").value.trim();
@@ -190,4 +200,5 @@ async function generateLessonPlanner() {
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
 }
+
 
