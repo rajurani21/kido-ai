@@ -6,7 +6,7 @@
 // ===== Backend Connection =====
 async function realAIResponse(prompt) {
   try {
-    const res = await fetch("http://localhost:3000/generate-content", {
+    const res = await fetch("https://kido-ai-952519942620.asia-south1.run.app/generate-content", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }) // ✅ backend expects "prompt"
@@ -180,3 +180,4 @@ async function generateLessonPlanner() {
   const result = await realAIResponse(`Create a weekly lesson plan for grade ${grade} in ${subject}`);
   outputDiv.innerText = result;
 }
+
