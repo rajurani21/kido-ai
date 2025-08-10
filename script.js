@@ -3,7 +3,7 @@
 // ==========================
 
 // Use your deployed backend endpoint here:
-const API_URL = "https://kido-ai-797989395382.asia-south1.run.app/generate-content";
+const API_URL = "https://kido-ai-952519942620.asia-south1.run.app/generate-content";
 
 // Particle background setup
 const canvas = document.getElementById("bgCanvas");
@@ -261,3 +261,4 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 
 });
+
