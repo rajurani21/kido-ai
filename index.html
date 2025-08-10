@@ -1,138 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KIDO AI Dashboard</title>
-
-  <!-- Fonts & Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- ResponsiveVoice for Speech -->
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kido AI</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_KEY"></script>
 </head>
 <body>
-  <!-- Animated Background -->
-  <canvas id="bgCanvas"></canvas>
+    <canvas id="bgCanvas"></canvas>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <div class="logo">KIDO</div>
+    <!-- Menu -->
     <div class="menu">
-      <button class="active" onclick="openFeature('dashboard')"><i class="fas fa-home"></i> Home</button>
-      <button onclick="openFeature('content-section')"><i class="fas fa-pen"></i> Content</button>
-      <button onclick="openFeature('worksheet-section')"><i class="fas fa-file-alt"></i> Worksheet</button>
-      <button onclick="openFeature('knowledge-section')"><i class="fas fa-search"></i> Knowledge</button>
-      <button onclick="openFeature('visual-section')"><i class="fas fa-paint-brush"></i> Visual</button>
-      <button onclick="openFeature('reading-section')"><i class="fas fa-book-open"></i> Reading</button>
-      <button onclick="openFeature('lesson-section')"><i class="fas fa-calendar-alt"></i> Lesson</button>
-    </div>
-  </div>
-
-  <!-- Dashboard -->
-  <div id="dashboard" class="main-content fade-in">
-    <h1>✨ Welcome to <span>KIDO AI</span></h1>
-    <p>Empowering teachers with AI-generated content, worksheets, and lesson plans.</p>
-    <div class="hint">➡ Click any feature from the sidebar to get started</div>
-  </div>
-
-  <!-- Content Generator -->
-  <div id="content-section" class="feature-section glass-card">
-    <h2>📝 Content Generator</h2>
-    <input id="cg-topic" placeholder="Enter topic..." />
-    <input id="cg-grade" placeholder="Enter grade..." />
-    <button class="glass-btn" onclick="generateContentGenerator()">Generate</button>
-    <div class="output typing-output" id="cg-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
-  </div>
-
-  <!-- Worksheet Creator -->
-  <div id="worksheet-section" class="feature-section glass-card">
-    <h2>📄 Worksheet Creator</h2>
-    <input id="ws-topic" placeholder="Enter topic..." />
-    <input id="ws-grade" placeholder="Enter grade..." />
-    <input id="ws-questions" placeholder="Number of questions" type="number" />
-    <button class="glass-btn" onclick="generateWorksheet()">Generate</button>
-    <div class="output typing-output" id="ws-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
-  </div>
-
-  <!-- Knowledge Base -->
-  <div id="knowledge-section" class="feature-section glass-card">
-    <h2>🔍 Knowledge Base</h2>
-    <input id="kb-question" placeholder="Ask a question..." />
-    <button class="glass-btn" onclick="generateKnowledgeBase()">Ask</button>
-    <div class="output typing-output" id="kb-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
-  </div>
-
-  <!-- Visual Aid Designer -->
-  <div id="visual-section" class="feature-section glass-card">
-    <h2>🎨 Visual Aid Designer</h2>
-    <input id="va-topic" placeholder="Enter topic..." />
-    <button class="glass-btn" onclick="generateVisualAid()">Generate Visual</button>
-    <div class="output typing-output" id="va-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
-  </div>
-
-  <!-- Reading Assessment -->
-  <div id="reading-section" class="feature-section glass-card">
-    <h2>📖 Reading Assessment</h2>
-    <input type="text" id="ra-topic" placeholder="Enter topic" />
-    <input type="text" id="ra-lang" placeholder="Enter language code (en-US, hi-IN, te-IN)" />
-    <label for="ra-voice">Select Voice:</label>
-    <select id="ra-voice">
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-    </select>
-    <label for="ra-volume">Volume:</label>
-    <input type="range" id="ra-volume" min="0" max="1" step="0.1" value="1" title="Adjust volume" />
-    <button class="glass-btn" onclick="generateReadingAssessment()">Generate & Speak</button>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
-
-    <div id="ra-output" class="output"></div>
-    <!-- ResponsiveVoice for Text-to-Speech -->
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=AIzaSyAcvfF7gz8fYJqKPdJsvBER4WNg2OezOLc
-"></script>
-
-<!-- Waveform & Controls -->
-<div id="voice-controls" style="display:none;">
-  <button onclick="toggleSpeech()" id="ra-toggle">⏸ Pause</button>
-  <button onclick="stopSpeech()">⏹ Stop</button>
-</div>
-<div id="waveform" style="display:none;">🔊 Speaking...</div>
-
-
-    <div class="waveform" id="waveform">
-      <span></span><span></span><span></span><span></span><span></span>
+        <button onclick="openFeature('dashboard')" class="active">Dashboard</button>
+        <button onclick="openFeature('content-generator')">Content Generator</button>
+        <button onclick="openFeature('worksheet-creator')">Worksheet Creator</button>
+        <button onclick="openFeature('lesson-planner')">Lesson Planner</button>
+        <button onclick="openFeature('visual-aid-designer')">Visual Aids</button>
+        <button onclick="openFeature('knowledge-base')">Knowledge Base</button>
+        <button onclick="openFeature('reading-assessment')">Reading Assessment</button>
     </div>
 
-    <div id="voice-controls" class="voice-controls">
-      <button id="ra-toggle" onclick="toggleSpeech()">⏸ Pause</button>
-      <button onclick="stopSpeech()">⏹ Stop</button>
+    <!-- Dashboard -->
+    <div id="dashboard" class="main-content">
+        <h1>Welcome to Kido AI</h1>
+        <p>Select a feature from the menu to begin.</p>
     </div>
-  </div>
 
-  <!-- Lesson Planner -->
-  <div id="lesson-section" class="feature-section glass-card">
-    <h2>📅 Lesson Planner</h2>
-    <input id="lp-grade" placeholder="Enter grade..." />
-    <input id="lp-subject" placeholder="Enter subject..." />
-    <button class="glass-btn" onclick="generateLessonPlanner()">Generate</button>
-    <div class="output typing-output" id="lp-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
-  </div>
+    <!-- Content Generator -->
+    <div id="content-generator" class="feature-section" style="display:none;">
+        <h2>Content Generator</h2>
+        <input id="cg-topic" placeholder="Enter topic">
+        <select id="cg-grade">
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+        </select>
+        <button onclick="generateContentGenerator()">Generate</button>
+        <div id="cg-output" class="output-box"></div>
+        <button onclick="goBack()">⬅ Back</button>
+    </div>
 
-  <!-- Scripts -->
-  <script src="script.js"></script>
-  <script src="typing.js"></script>
-  <script src="app.js"></script>
+    <!-- Worksheet Creator -->
+    <div id="worksheet-creator" class="feature-section" style="display:none;">
+        <h2>Worksheet Creator</h2>
+        <input id="ws-topic" placeholder="Enter topic">
+        <select id="ws-grade">
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+        </select>
+        <input type="number" id="ws-questions" placeholder="Number of Questions">
+        <button onclick="generateWorksheet()">Generate</button>
+        <div id="ws-output" class="output-box"></div>
+        <button onclick="goBack()">⬅ Back</button>
+    </div>
+
+    <!-- Lesson Planner -->
+    <div id="lesson-planner" class="feature-section" style="display:none;">
+        <h2>Lesson Planner</h2>
+        <select id="lp-grade">
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+        </select>
+        <input id="lp-subject" placeholder="Enter subject">
+        <button onclick="generateLessonPlanner()">Generate</button>
+        <div id="lp-output" class="output-box"></div>
+        <button onclick="goBack()">⬅ Back</button>
+    </div>
+
+    <!-- Visual Aid Designer -->
+    <div id="visual-aid-designer" class="feature-section" style="display:none;">
+        <h2>Visual Aid Designer</h2>
+        <input id="va-topic" placeholder="Enter topic">
+        <button onclick="generateVisualAid()">Generate</button>
+        <div id="va-output" class="output-box"></div>
+        <button onclick="goBack()">⬅ Back</button>
+    </div>
+
+    <!-- Knowledge Base -->
+    <div id="knowledge-base" class="feature-section" style="display:none;">
+        <h2>Knowledge Base</h2>
+        <input id="kb-question" placeholder="Ask a question">
+        <button onclick="generateKnowledgeBase()">Search</button>
+        <div id="kb-output" class="output-box"></div>
+        <button onclick="goBack()">⬅ Back</button>
+    </div>
+
+    <!-- Reading Assessment -->
+    <div id="reading-assessment" class="feature-section" style="display:none;">
+        <h2>Reading Assessment</h2>
+        <input id="ra-topic" placeholder="Enter passage topic">
+        <select id="ra-voice">
+            <option value="male">Male Voice</option>
+            <option value="female">Female Voice</option>
+        </select>
+        <input type="range" id="ra-volume" min="0" max="1" step="0.1" value="1">
+        <button onclick="generateReadingAssessment()">Generate</button>
+        <div id="ra-output" class="output-box"></div>
+
+        <div id="voice-controls" style="display:none;">
+            <button id="ra-toggle" onclick="toggleSpeech()">⏸ Pause</button>
+            <button onclick="stopSpeech()">⏹ Stop</button>
+        </div>
+        <div id="waveform" style="display:none;">🔊 Speaking...</div>
+        <button onclick="goBack()">⬅ Back</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="style.css"></script>
 </body>
-<footer>
-  <p class="footer-text">© 2024 KIDO AI. All rights reserved.</p>
-</footer>
 </html>
