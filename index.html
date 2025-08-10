@@ -126,13 +126,41 @@
     <div class="output typing-output" id="lp-output"></div>
     <button class="back-btn" onclick="goBack()">⬅ Back</button>
   </div>
+<script>
+function startTypingEffect(elementId, text, speed = 30) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    element.innerHTML = "";  // Clear old content
+    let index = 0;
+
+    const cursor = document.createElement("span");
+    cursor.classList.add("typing-cursor");
+    cursor.innerHTML = "|";
+    element.appendChild(cursor);
+
+    function typeChar() {
+        if (index < text.length) {
+            cursor.insertAdjacentText("beforebegin", text.charAt(index));
+            index++;
+            setTimeout(typeChar, speed);
+        } else {
+            cursor.classList.add("done"); // Stop cursor blinking after finishing
+        }
+    }
+    typeChar();
+}
+
+startTypingEffect("test-output", "Hello, this is a typing animation!", 50);
+</script>
 
   <!-- Scripts -->
   <script src="script.js"></script>
-  <script src="typing.js"></script>
+ 
   <script src="app.js"></script>
 </body>
 <footer>
   <p class="footer-text">© 2024 KIDO AI. All rights reserved.</p>
 </footer>
 </html>
+
