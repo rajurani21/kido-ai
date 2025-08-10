@@ -109,10 +109,8 @@ async function generateVisualAid() {
 // 5️⃣ Reading Assessment (Speech)
 // 5️⃣ Reading Assessment (Speech)
 let speechSynthesisUtterance = null;
-let isPaused = false;
 
 async function generateReadingAssessment() {
-  // In HTML you have id="ra-topic" and "ra-lang", no "ra-grade"
   const topic = document.getElementById("ra-topic").value.trim();
   const lang = document.getElementById("ra-lang").value.trim() || "en-US";
   const voiceType = document.getElementById("ra-voice").value;
@@ -130,7 +128,7 @@ async function generateReadingAssessment() {
   const text = await realAIResponse(prompt);
   outputDiv.innerText = text;
 
-  // Cancel any ongoing speech
+  // Cancel any ongoing speech before starting new one
   speechSynthesis.cancel();
 
   speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
@@ -164,26 +162,30 @@ async function generateReadingAssessment() {
 }
 
 function toggleSpeech() {
-  if (!speechSynthesisUtterance) return;
+  if (!speechSynthesis.speaking && !speechSynthesis.paused) {
+    // No speech in progress
+    return;
+  }
 
-  if (!isPaused) {
+  if (!speechSynthesis.paused) {
     speechSynthesis.pause();
     document.getElementById("ra-toggle").innerText = "▶ Resume";
   } else {
     speechSynthesis.resume();
     document.getElementById("ra-toggle").innerText = "⏸ Pause";
   }
-  isPaused = !isPaused;
 }
 
 function stopSpeech() {
-  speechSynthesis.cancel();
-  isPaused = false;
+  if (speechSynthesis.speaking || speechSynthesis.paused) {
+    speechSynthesis.cancel();
+  }
   document.getElementById("ra-toggle").innerText = "⏸ Pause";
   // Hide voice controls and waveform
   document.querySelector(".voice-controls").style.display = "none";
   document.querySelector(".waveform").style.display = "none";
 }
+
 // 6️⃣ Lesson Planner
 async function generateLessonPlanner() {
   const grade = document.getElementById("lp-grade").value.trim();
@@ -200,5 +202,6 @@ async function generateLessonPlanner() {
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
 }
+
 
 
