@@ -14,11 +14,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Smooth transitions globally */
-body, button, input, select {
-    transition: all 0.25s ease;
-}
-
 /* Canvas background animation */
 #bgCanvas {
     position: fixed;
@@ -37,11 +32,14 @@ body, button, input, select {
     width: 220px;
     height: 100%;
     background: rgba(0,0,0,0.4);
+    -webkit-backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     display: flex;
     flex-direction: column;
     padding: 20px 0;
-    transition: width 0.3s ease, background 0.3s ease;
+    transition: width 0.3s;
     border-right: 1px solid rgba(255,255,255,0.1);
 }
 
@@ -51,8 +49,6 @@ body, button, input, select {
     font-weight: bold;
     margin-bottom: 40px;
     color: #00f5ff;
-    letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(0, 245, 255, 0.6);
 }
 
 .sidebar .menu button {
@@ -67,7 +63,7 @@ body, button, input, select {
     gap: 12px;
     cursor: pointer;
     width: 100%;
-    transition: background 0.3s, padding-left 0.3s, color 0.3s;
+    transition: 0.3s;
 }
 
 .sidebar .menu button:hover {
@@ -83,18 +79,16 @@ body, button, input, select {
     margin-left: 240px;
     padding: 40px;
     min-height: 100vh;
-    transition: margin 0.3s ease;
+    transition: margin 0.3s;
 }
 
 .main-content h1 {
     font-size: 36px;
     margin-bottom: 10px;
-    font-weight: 600;
 }
 
 .main-content h1 span {
     color: #00f5ff;
-    text-shadow: 0 0 8px rgba(0,245,255,0.5);
 }
 
 .hint {
@@ -110,16 +104,7 @@ body, button, input, select {
     margin-left: 240px;
     padding: 40px;
     min-height: 100vh;
-    opacity: 0;
-    transform: translateY(15px);
-    animation: fadeSlideIn 0.5s forwards ease-in-out;
-}
-
-@keyframes fadeSlideIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    transition: 0.3s;
 }
 
 .glass-card {
@@ -129,7 +114,6 @@ body, button, input, select {
     padding: 30px;
     border: 1px solid rgba(255,255,255,0.1);
     animation: fadeIn 0.6s ease-in-out;
-    box-shadow: 0 0 20px rgba(0,245,255,0.05);
 }
 
 @keyframes fadeIn {
@@ -158,13 +142,11 @@ input, select {
     color: white;
     cursor: pointer;
     font-weight: bold;
-    box-shadow: 0 0 10px rgba(0,245,255,0.4);
+    transition: 0.3s;
 }
 
 .glass-btn:hover {
     background: linear-gradient(120deg, #00d4ff, #005fff);
-    transform: scale(1.03);
-    box-shadow: 0 0 20px rgba(0,245,255,0.6);
 }
 
 .back-btn {
@@ -177,7 +159,6 @@ input, select {
     background: rgba(255,255,255,0.2);
 }
 
-/* Output box */
 .output {
     background: rgba(0,0,0,0.4);
     padding: 15px;
@@ -232,6 +213,7 @@ input, select {
     color: white;
     border: 1px solid rgba(255,255,255,0.1);
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .voice-controls button:hover {
@@ -257,15 +239,12 @@ input, select {
         padding: 20px;
     }
 }
-
 footer {
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.5);
     color: white;
     text-align: center;
-    padding: 12px 0;
+    padding: 10px 0;
     position: fixed;
     bottom: 0;
     width: 100%;
-    font-size: 14px;
-    box-shadow: 0 -2px 10px rgba(0,245,255,0.2);
 }
