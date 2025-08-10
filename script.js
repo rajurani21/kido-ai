@@ -202,6 +202,10 @@ async function generateLessonPlanner() {
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
 }
+window.addEventListener('beforeunload', () => {
+  document.body.style.opacity = '0';
+});
+
 
 
 
