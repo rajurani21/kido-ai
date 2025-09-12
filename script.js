@@ -1,5 +1,5 @@
 // =====================================
-//  KIDO AI Frontend Script (Updated)
+//  KIDO AI Frontend Script (Multi-Language Support)
 //  Connected to Gemini Backend
 // =====================================
 
@@ -23,6 +23,30 @@ async function realAIResponse(prompt) {
   }
 }
 
+// ======================
+// Language Detection
+// ======================
+const langRanges = {
+  Telugu: /[\u0C00-\u0C7F]/,
+  Hindi: /[\u0900-\u097F]/,
+  Tamil: /[\u0B80-\u0BFF]/,
+  Kannada: /[\u0C80-\u0CFF]/,
+  Malayalam: /[\u0D00-\u0D7F]/,
+  Bengali: /[\u0980-\u09FF]/,
+  Gujarati: /[\u0A80-\u0AFF]/,
+};
+
+function detectLanguage(text) {
+  for (const [lang, regex] of Object.entries(langRanges)) {
+    if (regex.test(text)) return lang;
+  }
+  return "English"; // fallback
+}
+
+// ======================
+// Feature Handling
+// ======================
+
 // Show selected feature and hide others
 function openFeature(featureId) {
   document.getElementById("dashboard").style.display = "none";
@@ -39,10 +63,6 @@ function goBack() {
 async function generateContentGenerator() {
   const topic = document.getElementById("cg-topic").value.trim();
   const grade = document.getElementById("cg-grade").value.trim();
-  // Added language select fallback:
-  const languageInput = document.getElementById("cg-language");
-  const language = languageInput ? languageInput.value.trim() : "English";
-
   const outputDiv = document.getElementById("cg-output");
 
   if (!topic || !grade) {
@@ -50,8 +70,15 @@ async function generateContentGenerator() {
     return;
   }
 
+  const language = detectLanguage(topic);
   outputDiv.innerText = "⏳ Generating content...";
-  const prompt = `Generate ${language} lesson content for grade ${grade} about ${topic}`;
+
+  const prompt = `
+Generate a Grade ${grade} lesson plan on "${topic}".
+IMPORTANT: Write the entire response in ${language} only.
+Include objectives, materials, and lesson procedure.
+  `;
+
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
 }
@@ -68,8 +95,14 @@ async function generateWorksheet() {
     return;
   }
 
+  const language = detectLanguage(topic);
   outputDiv.innerText = "⏳ Creating worksheet...";
-  const prompt = `Create a ${questions}-question worksheet for grade ${grade} on ${topic}`;
+
+  const prompt = `
+Create a ${questions}-question worksheet for Grade ${grade} on "${topic}".
+IMPORTANT: Write all questions and instructions in ${language} only.
+  `;
+
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
 }
@@ -84,8 +117,14 @@ async function generateKnowledgeBase() {
     return;
   }
 
+  const language = detectLanguage(question);
   outputDiv.innerText = "⏳ Searching knowledge base...";
-  const prompt = `Answer the following question: ${question}`;
+
+  const prompt = `
+Answer the following question in ${language} only:
+${question}
+  `;
+
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
 }
@@ -100,13 +139,18 @@ async function generateVisualAid() {
     return;
   }
 
+  const language = detectLanguage(topic);
   outputDiv.innerText = "🎨 Generating visual idea...";
-  const prompt = `Describe a simple visual aid for: ${topic}`;
+
+  const prompt = `
+Describe a simple classroom visual aid for "${topic}".
+IMPORTANT: The explanation must be in ${language} only.
+  `;
+
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
 }
 
-// 5️⃣ Reading Assessment (Speech)
 // 5️⃣ Reading Assessment (Speech)
 let speechSynthesisUtterance = null;
 
@@ -123,8 +167,13 @@ async function generateReadingAssessment() {
     return;
   }
 
+  const language = detectLanguage(topic);
   outputDiv.innerText = "⏳ Preparing reading assessment...";
-  const prompt = `Generate a short reading passage for topic: ${topic}`;
+
+  const prompt = `
+Generate a short reading passage on "${topic}" in ${language} only.
+  `;
+
   const text = await realAIResponse(prompt);
   outputDiv.innerText = text;
 
@@ -135,7 +184,6 @@ async function generateReadingAssessment() {
   speechSynthesisUtterance.lang = lang;
   speechSynthesisUtterance.volume = volume;
 
-  // Wait for voices to be loaded
   let voices = speechSynthesis.getVoices();
   if (!voices.length) {
     await new Promise(resolve => {
@@ -162,10 +210,7 @@ async function generateReadingAssessment() {
 }
 
 function toggleSpeech() {
-  if (!speechSynthesis.speaking && !speechSynthesis.paused) {
-    // No speech in progress
-    return;
-  }
+  if (!speechSynthesis.speaking && !speechSynthesis.paused) return;
 
   if (!speechSynthesis.paused) {
     speechSynthesis.pause();
@@ -181,7 +226,6 @@ function stopSpeech() {
     speechSynthesis.cancel();
   }
   document.getElementById("ra-toggle").innerText = "⏸ Pause";
-  // Hide voice controls and waveform
   document.querySelector(".voice-controls").style.display = "none";
   document.querySelector(".waveform").style.display = "none";
 }
@@ -197,15 +241,19 @@ async function generateLessonPlanner() {
     return;
   }
 
+  const language = detectLanguage(subject);
   outputDiv.innerText = "⏳ Generating lesson plan...";
-  const prompt = `Create a weekly lesson plan for grade ${grade} in ${subject}`;
+
+  const prompt = `
+Create a weekly lesson plan for Grade ${grade} in subject "${subject}".
+IMPORTANT: Write the entire response in ${language} only.
+  `;
+
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
 }
+
+// Page fade-out effect
 window.addEventListener('beforeunload', () => {
   document.body.style.opacity = '0';
 });
-
-
-
-
