@@ -63,6 +63,9 @@ function goBack() {
 async function generateContentGenerator() {
   const topic = document.getElementById("cg-topic").value.trim();
   const grade = document.getElementById("cg-grade").value.trim();
+  const languageInput = document.getElementById("cg-language");
+  const language = languageInput ? languageInput.value.trim() : "";
+
   const outputDiv = document.getElementById("cg-output");
 
   if (!topic || !grade) {
@@ -70,14 +73,14 @@ async function generateContentGenerator() {
     return;
   }
 
-  const language = detectLanguage(topic);
   outputDiv.innerText = "⏳ Generating content...";
 
-  const prompt = `
-Generate a Grade ${grade} lesson plan on "${topic}".
-IMPORTANT: Write the entire response in ${language} only.
-Include objectives, materials, and lesson procedure.
-  `;
+  // 👇 Updated prompt to respect input language
+  const prompt = language
+    ? `Generate lesson content in ${language} for grade ${grade} on topic: ${topic}. 
+       Respond ONLY in ${language}.`
+    : `Generate lesson content for grade ${grade} on topic: ${topic}. 
+       Respond in the same language as the topic/question.`;
 
   const result = await realAIResponse(prompt);
   outputDiv.innerText = result;
@@ -257,3 +260,4 @@ IMPORTANT: Write the entire response in ${language} only.
 window.addEventListener('beforeunload', () => {
   document.body.style.opacity = '0';
 });
+
