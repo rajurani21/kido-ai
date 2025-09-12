@@ -124,12 +124,37 @@ async function generateVisualAid() {
   outputDiv.innerText = result;
 }
 
+// 🌍 Extended language detection with proper codes
+function detectLanguage(text) {
+  const telugu = /[\u0C00-\u0C7F]/;
+  const hindi = /[\u0900-\u097F]/;
+  const tamil = /[\u0B80-\u0BFF]/;
+  const kannada = /[\u0C80-\u0CFF]/;
+  const malayalam = /[\u0D00-\u0D7F]/;
+  const bengali = /[\u0980-\u09FF]/;
+  const gujarati = /[\u0A80-\u0AFF]/;
+  const punjabi = /[\u0A00-\u0A7F]/;
+  const urdu = /[\u0600-\u06FF]/;
+
+  if (telugu.test(text)) return { lang: "Telugu", code: "te-IN" };
+  if (hindi.test(text)) return { lang: "Hindi", code: "hi-IN" };
+  if (tamil.test(text)) return { lang: "Tamil", code: "ta-IN" };
+  if (kannada.test(text)) return { lang: "Kannada", code: "kn-IN" };
+  if (malayalam.test(text)) return { lang: "Malayalam", code: "ml-IN" };
+  if (bengali.test(text)) return { lang: "Bengali", code: "bn-IN" };
+  if (gujarati.test(text)) return { lang: "Gujarati", code: "gu-IN" };
+  if (punjabi.test(text)) return { lang: "Punjabi", code: "pa-IN" };
+  if (urdu.test(text)) return { lang: "Urdu", code: "ur-IN" };
+
+  // Default to English
+  return { lang: "English", code: "en-US" };
+}
+
 // 5️⃣ Reading Assessment (Speech)
 let speechSynthesisUtterance = null;
 
 async function generateReadingAssessment() {
   const topic = document.getElementById("ra-topic").value.trim();
-  const langCode = document.getElementById("ra-lang").value.trim() || "en-US";
   const voiceType = document.getElementById("ra-voice").value;
   const volumeInput = document.getElementById("ra-volume");
   const volume = volumeInput ? parseFloat(volumeInput.value) : 1;
@@ -141,17 +166,21 @@ async function generateReadingAssessment() {
   }
 
   outputDiv.innerText = "⏳ Preparing reading assessment...";
-  const lang = detectLanguage(topic);
 
+  // Detect input language
+  const { lang, code } = detectLanguage(topic);
+
+  // Prompt AI to reply in same language
   const prompt = `Generate a short reading passage for topic "${topic}". Respond ONLY in ${lang}.`;
   const text = await realAIResponse(prompt);
   outputDiv.innerText = text;
 
-  // Cancel any ongoing speech before starting new one
+  // Cancel any ongoing speech
   speechSynthesis.cancel();
 
+  // Setup speech synthesis
   speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
-  speechSynthesisUtterance.lang = langCode;
+  speechSynthesisUtterance.lang = code; // Use detected voice code
   speechSynthesisUtterance.volume = volume;
 
   // Wait for voices to be loaded
@@ -165,6 +194,7 @@ async function generateReadingAssessment() {
     });
   }
 
+  // Pick gendered voice if available
   if (voiceType === "female") {
     const femaleVoice = voices.find(v => /female/i.test(v.name) || v.name.toLowerCase().includes("zira"));
     if (femaleVoice) speechSynthesisUtterance.voice = femaleVoice;
@@ -173,17 +203,16 @@ async function generateReadingAssessment() {
     if (maleVoice) speechSynthesisUtterance.voice = maleVoice;
   }
 
+  // Speak the passage
   speechSynthesis.speak(speechSynthesisUtterance);
 
-  // Show voice controls
+  // Show voice controls + waveform UI
   document.querySelector(".voice-controls").style.display = "flex";
   document.querySelector(".waveform").style.display = "flex";
 }
 
 function toggleSpeech() {
-  if (!speechSynthesis.speaking && !speechSynthesis.paused) {
-    return;
-  }
+  if (!speechSynthesis.speaking && !speechSynthesis.paused) return;
 
   if (!speechSynthesis.paused) {
     speechSynthesis.pause();
@@ -202,6 +231,7 @@ function stopSpeech() {
   document.querySelector(".voice-controls").style.display = "none";
   document.querySelector(".waveform").style.display = "none";
 }
+
 
 // 6️⃣ Lesson Planner
 async function generateLessonPlanner() {
@@ -225,3 +255,4 @@ async function generateLessonPlanner() {
 window.addEventListener('beforeunload', () => {
   document.body.style.opacity = '0';
 });
+
