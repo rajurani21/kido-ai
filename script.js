@@ -221,4 +221,22 @@ function stopSpeech() {
 async function generateLessonPlanner() {
   const grade = document.getElementById("lp-grade").value.trim();
   const subject = document.getElementById("lp-subject").value.trim();
-  const outputDiv = document.getElementById
+  const outputDiv = document.getElementById("lp-output");
+
+  if (!grade || !subject) {
+    alert("Please enter grade and subject!");
+    return;
+  }
+
+  outputDiv.innerText = "⏳ Generating lesson plan...";
+  const { lang } = detectLanguage(subject);
+
+  const prompt = `Create a weekly lesson plan for grade ${grade} in "${subject}". Respond ONLY in ${lang}.`;
+  const result = await realAIResponse(prompt);
+  outputDiv.innerText = result;
+}
+
+// Fade effect on unload
+window.addEventListener("beforeunload", () => {
+  document.body.style.opacity = "0";
+});
