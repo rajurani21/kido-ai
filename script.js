@@ -3,7 +3,7 @@
 // =====================================
 
 // Backend API URL (change if needed)
-const backendURL = "https://kido-ai-952519942620.asia-south1.run.app/generate-content";
+const backendURL = "https://kido-backend-952519942620.asia-south1.run.app/generate-content";
 
 // Helper: Send prompt to backend and get AI response
 async function realAIResponse(prompt) {
@@ -236,3 +236,4 @@ async function generateLessonPlanner() {
 window.addEventListener('beforeunload', () => {
   document.body.style.opacity = '0';
 });
+
