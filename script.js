@@ -6,21 +6,27 @@
 const backendURL = "https://kido-backend-952519942620.asia-south1.run.app/generate-content";
 
 // Helper: Send prompt to backend and get AI response
+// Helper: Send prompt to backend and get AI response
 async function realAIResponse(prompt) {
   try {
-    const res = await fetch(backendURL, {
+    const res = await fetch("https://kido-backend-952519942620.asia-south1.run.app/generate-content", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }) // backend expects "prompt" key
     });
 
     const data = await res.json();
+
+    // Show provider in console for debugging
+    console.log("✅ AI provider:", data.provider || "Unknown");
+
     return data.result || "⚠ No response from AI.";
   } catch (err) {
     console.error("❌ AI request failed:", err);
     return "⚠ Could not reach backend!";
   }
 }
+
 
 // 🌍 Language detection
 function detectLanguage(text) {
@@ -236,5 +242,6 @@ async function generateLessonPlanner() {
 window.addEventListener('beforeunload', () => {
   document.body.style.opacity = '0';
 });
+
 
 
