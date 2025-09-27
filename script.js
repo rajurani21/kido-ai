@@ -1,32 +1,35 @@
-//  KIDO AI Frontend Script (Fixed & Cleaned)
-//  Connected to Gemini Backend
+//  KIDO AI Frontend Script (Updated)
+//  Connected to KIDO Backend (OpenAI + Gemini)
 // =====================================
 
-// Backend API URL (change if needed)
+// Backend API URL
 const backendURL = "https://kido-backend-952519942620.asia-south1.run.app/generate-content";
 
 // Helper: Send prompt to backend and get AI response
-// Helper: Send prompt to backend and get AI response
 async function realAIResponse(prompt) {
   try {
-    const res = await fetch("https://kido-backend-952519942620.asia-south1.run.app/generate-content", {
+    const res = await fetch(backendURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }) // backend expects "prompt" key
+      body: JSON.stringify({ prompt })
     });
 
     const data = await res.json();
 
-    // Show provider in console for debugging
+    // Show provider in console and append to UI
     console.log("✅ AI provider:", data.provider || "Unknown");
 
-    return data.result || "⚠ No response from AI.";
+    // If backend returned an error message (like 401 or Gemini fallback)
+    if (data.result?.startsWith("⚠ Backend error") || data.result?.startsWith("⚠ Could not")) {
+      return data.result;
+    }
+
+    return `${data.result} \n\n🧠 [Provider: ${data.provider || "Unknown"}]`;
   } catch (err) {
     console.error("❌ AI request failed:", err);
     return "⚠ Could not reach backend!";
   }
 }
-
 
 // 🌍 Language detection
 function detectLanguage(text) {
@@ -53,7 +56,7 @@ function detectLanguage(text) {
   return { lang: "English", code: "en-US" };
 }
 
-// Show selected feature and hide others
+// Show selected feature
 function openFeature(featureId) {
   document.getElementById("dashboard").style.display = "none";
   document.querySelectorAll(".feature-section").forEach(sec => sec.style.display = "none");
@@ -162,7 +165,7 @@ async function generateReadingAssessment() {
   const text = await realAIResponse(prompt);
   outputDiv.innerText = text;
 
-  // Cancel any ongoing speech
+  // Cancel ongoing speech
   speechSynthesis.cancel();
 
   // Setup speech synthesis
@@ -170,7 +173,6 @@ async function generateReadingAssessment() {
   speechSynthesisUtterance.lang = code;
   speechSynthesisUtterance.volume = volume;
 
-  // Load voices
   let voices = speechSynthesis.getVoices();
   if (!voices.length) {
     await new Promise(resolve => {
@@ -181,7 +183,6 @@ async function generateReadingAssessment() {
     });
   }
 
-  // Pick gendered voice if available
   if (voiceType === "female") {
     const femaleVoice = voices.find(v => /female/i.test(v.name) || v.name.toLowerCase().includes("zira"));
     if (femaleVoice) speechSynthesisUtterance.voice = femaleVoice;
@@ -190,10 +191,7 @@ async function generateReadingAssessment() {
     if (maleVoice) speechSynthesisUtterance.voice = maleVoice;
   }
 
-  // Speak the passage
   speechSynthesis.speak(speechSynthesisUtterance);
-
-  // Show controls
   document.querySelector(".voice-controls").style.display = "flex";
   document.querySelector(".waveform").style.display = "flex";
 }
@@ -223,24 +221,4 @@ function stopSpeech() {
 async function generateLessonPlanner() {
   const grade = document.getElementById("lp-grade").value.trim();
   const subject = document.getElementById("lp-subject").value.trim();
-  const outputDiv = document.getElementById("lp-output");
-
-  if (!grade || !subject) {
-    alert("Please enter grade and subject!");
-    return;
-  }
-
-  outputDiv.innerText = "⏳ Generating lesson plan...";
-  const { lang } = detectLanguage(subject);
-
-  const prompt = `Create a weekly lesson plan for grade ${grade} in "${subject}". Respond ONLY in ${lang}.`;
-  const result = await realAIResponse(prompt);
-  outputDiv.innerText = result;
-}
-
-// Fade effect on unload
-window.addEventListener('beforeunload', () => {
-  document.body.style.opacity = '0';
-});
-
-
+  const outputDiv = document.getElementById
