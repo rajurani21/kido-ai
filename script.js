@@ -237,3 +237,4 @@ window.addEventListener('beforeunload', () => {
   document.body.style.opacity = '0';
 });
 
+
