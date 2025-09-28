@@ -16,9 +16,7 @@ async function realAIResponse(prompt) {
 
     const data = await res.json();
 
-    // Show provider in console and append to UI
-    console.log("✅ AI provider:", data.provider || "Unknown");
-
+    
     // If backend returned an error message (like 401 or Gemini fallback)
     if (data.result?.startsWith("⚠ Backend error") || data.result?.startsWith("⚠ Could not")) {
       return data.result;
@@ -240,3 +238,4 @@ async function generateLessonPlanner() {
 window.addEventListener("beforeunload", () => {
   document.body.style.opacity = "0";
 });
+
