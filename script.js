@@ -5,7 +5,6 @@
 // Backend API URL
 const backendURL = "https://kido-backend-952519942620.asia-south1.run.app/generate-content";
 
-// Helper: Send prompt to backend and get AI response
 async function realAIResponse(prompt) {
   try {
     const res = await fetch(backendURL, {
@@ -16,16 +15,20 @@ async function realAIResponse(prompt) {
 
     const data = await res.json();
 
-    
-    // If backend returned an error message (like 401 or Gemini fallback)
+    // If backend returned an error message
     if (data.result?.startsWith("⚠ Backend error") || data.result?.startsWith("⚠ Could not")) {
       return data.result;
     }
 
+    // Simply return the AI response text
+    return data.result;
+
+  } catch (err) {
     console.error("❌ AI request failed:", err);
     return "⚠ Could not reach backend!";
   }
 }
+
 
 // 🌍 Language detection
 function detectLanguage(text) {
@@ -236,5 +239,6 @@ async function generateLessonPlanner() {
 window.addEventListener("beforeunload", () => {
   document.body.style.opacity = "0";
 });
+
 
 
