@@ -22,8 +22,6 @@ async function realAIResponse(prompt) {
       return data.result;
     }
 
-    return `${data.result} \n\n🧠 [Provider: ${data.provider || "Unknown"}]`;
-  } catch (err) {
     console.error("❌ AI request failed:", err);
     return "⚠ Could not reach backend!";
   }
@@ -238,4 +236,5 @@ async function generateLessonPlanner() {
 window.addEventListener("beforeunload", () => {
   document.body.style.opacity = "0";
 });
+
 
