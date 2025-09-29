@@ -1,163 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KIDO AI Dashboard</title>
 
   <!-- Fonts & Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- ResponsiveVoice for Speech -->
-  
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <!-- Animated Background -->
+<body class="dark-mode">
+  <!-- Animated Background Layers -->
   <canvas id="bgCanvas"></canvas>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
+  <!-- Sidebar (Collapsible) -->
+  <div class="sidebar" id="sidebar">
     <div class="logo">KIDO</div>
     <div class="menu">
-      <button class="active" onclick="openFeature('dashboard')"><i class="fas fa-home"></i> Home</button>
-      <button onclick="openFeature('content-section')"><i class="fas fa-pen"></i> Content</button>
-      <button onclick="openFeature('worksheet-section')"><i class="fas fa-file-alt"></i> Worksheet</button>
-      <button onclick="openFeature('knowledge-section')"><i class="fas fa-search"></i> Knowledge</button>
-      <button onclick="openFeature('visual-section')"><i class="fas fa-paint-brush"></i> Visual</button>
-      <button onclick="openFeature('reading-section')"><i class="fas fa-book-open"></i> Reading</button>
-      <button onclick="openFeature('lesson-section')"><i class="fas fa-calendar-alt"></i> Lesson</button>
+      <button class="active" onclick="openFeature('dashboard')" aria-label="Go to Home">
+        <i class="fas fa-home"></i> <span>Home</span>
+      </button>
+      <button onclick="openFeature('content-section')" aria-label="Go to Content Generator">
+        <i class="fas fa-pen"></i> <span>Content</span>
+      </button>
+      <button onclick="openFeature('worksheet-section')" aria-label="Go to Worksheet Creator">
+        <i class="fas fa-file-alt"></i> <span>Worksheet</span>
+      </button>
+      <button onclick="openFeature('knowledge-section')" aria-label="Go to Knowledge Base">
+        <i class="fas fa-search"></i> <span>Knowledge</span>
+      </button>
+      <button onclick="openFeature('visual-section')" aria-label="Go to Visual Aid Designer">
+        <i class="fas fa-paint-brush"></i> <span>Visual</span>
+      </button>
+      <button onclick="openFeature('reading-section')" aria-label="Go to Reading Assessment">
+        <i class="fas fa-book-open"></i> <span>Reading</span>
+      </button>
+      <button onclick="openFeature('image-section')" aria-label="Go to AI Image Generator">
+        <i class="fas fa-image"></i> <span>Image</span>
+      </button>
+      <button onclick="openFeature('lesson-section')" aria-label="Go to Lesson Planner">
+        <i class="fas fa-calendar-alt"></i> <span>Lesson</span>
+      </button>
     </div>
+    <button class="collapse-btn" onclick="toggleSidebar()" aria-label="Toggle sidebar">☰</button>
   </div>
 
-  <!-- Dashboard -->
+  <!-- Dark Mode Toggle -->
+  <button class="mode-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark/light mode">
+    <i class="fas fa-moon"></i>
+  </button>
+
+  <!-- Dashboard with Bento Grid -->
   <div id="dashboard" class="main-content fade-in">
     <h1>✨ Welcome to <span>KIDO AI</span></h1>
     <p>Empowering teachers with AI-generated content, worksheets, and lesson plans.</p>
-    <div class="hint">➡ Click any feature from the sidebar to get started</div>
+    
+    <!-- AI Suggestions -->
+    <div id="ai-suggestions" class="glass-card">
+      <h2>Personalized Suggestions</h2>
+      <p id="suggestion-text">Explore our tools to get started!</p>
+    </div>
+    
+    <!-- Bento Grid -->
+    <div class="bento-grid">
+      <div class="bento-card large" onclick="openFeature('content-section')" role="button" tabindex="0" aria-label="Open Content Generator">
+        <i class="fas fa-pen"></i>
+        <h3>Content Generator</h3>
+      </div>
+      <div class="bento-card" onclick="openFeature('worksheet-section')" role="button" tabindex="0" aria-label="Open Worksheet Creator">
+        <i class="fas fa-file-alt"></i>
+        <h3>Worksheet</h3>
+      </div>
+      <div class="bento-card" onclick="openFeature('knowledge-section')" role="button" tabindex="0" aria-label="Open Knowledge Base">
+        <i class="fas fa-search"></i>
+        <h3>Knowledge</h3>
+      </div>
+      <div class="bento-card" onclick="openFeature('visual-section')" role="button" tabindex="0" aria-label="Open Visual Aid Designer">
+        <i class="fas fa-paint-brush"></i>
+        <h3>Visual</h3>
+      </div>
+      <div class="bento-card" onclick="openFeature('reading-section')" role="button" tabindex="0" aria-label="Open Reading Assessment">
+        <i class="fas fa-book-open"></i>
+        <h3>Reading</h3>
+      </div>
+      <div class="bento-card large" onclick="openFeature('image-section')" role="button" tabindex="0" aria-label="Open AI Image Generator">
+        <i class="fas fa-image"></i>
+        <h3>Image Generator</h3>
+      </div>
+      <div class="bento-card" onclick="openFeature('lesson-section')" role="button" tabindex="0" aria-label="Open Lesson Planner">
+        <i class="fas fa-calendar-alt"></i>
+        <h3>Lesson</h3>
+      </div>
+    </div>
   </div>
 
   <!-- Content Generator -->
-  <div id="content-section" class="feature-section glass-card">
+  <div id="content-section" class="feature-section glass-card" aria-hidden="true">
     <h2>📝 Content Generator</h2>
-    <input id="cg-topic" placeholder="Enter topic..." />
-    <input id="cg-grade" placeholder="Enter grade..." />
-    <button class="glass-btn" onclick="generateContentGenerator()">Generate</button>
+    <input id="cg-topic" placeholder="Enter topic..." aria-label="Topic for content generation" />
+    <input id="cg-grade" placeholder="Enter grade..." aria-label="Grade level" />
+    <select id="cg-language" aria-label="Select language">
+      <option value="English">English</option>
+      <option value="Spanish">Spanish</option>
+      <option value="Hindi">Hindi</option>
+    </select>
+    <button class="glass-btn" onclick="generateContentGenerator()" aria-label="Generate lesson content">Generate</button>
+    <div class="error-message" id="cg-error"></div>
     <div class="output typing-output" id="cg-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+    <button class="back-btn" onclick="goBack()" aria-label="Back to dashboard">⬅ Back</button>
   </div>
 
   <!-- Worksheet Creator -->
-  <div id="worksheet-section" class="feature-section glass-card">
+  <div id="worksheet-section" class="feature-section glass-card" aria-hidden="true">
     <h2>📄 Worksheet Creator</h2>
-    <input id="ws-topic" placeholder="Enter topic..." />
-    <input id="ws-grade" placeholder="Enter grade..." />
-    <input id="ws-questions" placeholder="Number of questions" type="number" />
-    <button class="glass-btn" onclick="generateWorksheet()">Generate</button>
+    <input id="ws-topic" placeholder="Enter topic..." aria-label="Topic for worksheet" />
+    <input id="ws-grade" placeholder="Enter grade..." aria-label="Grade level" />
+    <input id="ws-questions" placeholder="Number of questions" type="number" aria-label="Number of questions" />
+    <button class="glass-btn" onclick="generateWorksheet()" aria-label="Generate worksheet">Generate</button>
+    <div class="error-message" id="ws-error"></div>
     <div class="output typing-output" id="ws-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+    <button class="back-btn" onclick="goBack()" aria-label="Back to dashboard">⬅ Back</button>
   </div>
 
   <!-- Knowledge Base -->
-  <div id="knowledge-section" class="feature-section glass-card">
+  <div id="knowledge-section" class="feature-section glass-card" aria-hidden="true">
     <h2>🔍 Knowledge Base</h2>
-    <input id="kb-question" placeholder="Ask a question..." />
-    <button class="glass-btn" onclick="generateKnowledgeBase()">Ask</button>
+    <input id="kb-question" placeholder="Ask a question..." aria-label="Question for knowledge base" />
+    <button class="glass-btn" onclick="generateKnowledgeBase()" aria-label="Ask question">Ask</button>
+    <div class="error-message" id="kb-error"></div>
     <div class="output typing-output" id="kb-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+    <button class="back-btn" onclick="goBack()" aria-label="Back to dashboard">⬅ Back</button>
   </div>
 
   <!-- Visual Aid Designer -->
-  <div id="visual-section" class="feature-section glass-card">
+  <div id="visual-section" class="feature-section glass-card" aria-hidden="true">
     <h2>🎨 Visual Aid Designer</h2>
-    <input id="va-topic" placeholder="Enter topic..." />
-    <button class="glass-btn" onclick="generateVisualAid()">Generate Visual</button>
+    <input id="va-topic" placeholder="Enter topic..." aria-label="Topic for visual aid" />
+    <button class="glass-btn" onclick="generateVisualAid()" aria-label="Generate visual aid">Generate Visual</button>
+    <div class="error-message" id="va-error"></div>
     <div class="output typing-output" id="va-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+    <button class="back-btn" onclick="goBack()" aria-label="Back to dashboard">⬅ Back</button>
   </div>
 
   <!-- Reading Assessment -->
-  <!-- Reading Assessment -->
-<div id="reading-section" class="feature-section glass-card">
-  <h2>📖 Reading Assessment</h2>
-  <input type="text" id="ra-topic" placeholder="Enter topic" />
-  <input type="text" id="ra-lang" placeholder="Enter language code (en-US, hi-IN, te-IN)" />
-  <label for="ra-voice">Select Voice:</label>
-  <select id="ra-voice">
-    <option value="male">Male</option>
-    <option value="female">Female</option>
-  </select>
-  <label for="ra-volume">Volume:</label>
-  <input type="range" id="ra-volume" min="0" max="1" step="0.1" value="1" title="Adjust volume" />
-  <button class="glass-btn" onclick="generateReadingAssessment()">Generate & Speak</button>
-  <button class="back-btn" onclick="goBack()">⬅ Back</button>
-
-  <div id="ra-output" class="output"></div>
-
-  <!-- Waveform Animation -->
-  <div class="waveform" id="waveform" style="display:none;">
-    <span></span><span></span><span></span><span></span><span></span>
+  <div id="reading-section" class="feature-section glass-card" aria-hidden="true">
+    <h2>📖 Reading Assessment</h2>
+    <input type="text" id="ra-topic" placeholder="Enter topic" aria-label="Topic for reading assessment" />
+    <input type="text" id="ra-lang" placeholder="Enter language code (en-US, hi-IN, te-IN)" aria-label="Language code" />
+    <label for="ra-voice">Select Voice:</label>
+    <select id="ra-voice" aria-label="Select voice type">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+    <label for="ra-volume">Volume:</label>
+    <input type="range" id="ra-volume" min="0" max="1" step="0.1" value="1" title="Adjust volume" aria-label="Adjust volume" />
+    <button class="glass-btn" onclick="generateReadingAssessment()" aria-label="Generate and speak reading assessment">Generate & Speak</button>
+    <div class="error-message" id="ra-error"></div>
+    <div id="ra-output" class="output"></div>
+    <div class="waveform" id="waveform" style="display:none;">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="voice-controls" style="display:none;">
+      <button id="ra-toggle" class="btn control-btn" onclick="toggleSpeech()" aria-label="Pause or resume speech">⏸ Pause</button>
+      <button class="btn control-btn stop-btn" onclick="stopSpeech()" aria-label="Stop speech">⏹ Stop</button>
+    </div>
+    <button class="back-btn" onclick="goBack()" aria-label="Back to dashboard">⬅ Back</button>
   </div>
-
-  <!-- Voice Controls -->
-  <div class="voice-controls" style="display:none;">
-    <button id="ra-toggle" class="btn control-btn" onclick="toggleSpeech()">⏸ Pause</button>
-    <button class="btn control-btn stop-btn" onclick="stopSpeech()">⏹ Stop</button>
-  </div>
-</div>
-
 
   <!-- Lesson Planner -->
-  <div id="lesson-section" class="feature-section glass-card">
+  <div id="lesson-section" class="feature-section glass-card" aria-hidden="true">
     <h2>📅 Lesson Planner</h2>
-    <input id="lp-grade" placeholder="Enter grade..." />
-    <input id="lp-subject" placeholder="Enter subject..." />
-    <button class="glass-btn" onclick="generateLessonPlanner()">Generate</button>
+    <input id="lp-grade" placeholder="Enter grade..." aria-label="Grade level" />
+    <input id="lp-subject" placeholder="Enter subject..." aria-label="Subject" />
+    <button class="glass-btn" onclick="generateLessonPlanner()" aria-label="Generate lesson plan">Generate</button>
+    <div class="error-message" id="lp-error"></div>
     <div class="output typing-output" id="lp-output"></div>
-    <button class="back-btn" onclick="goBack()">⬅ Back</button>
+    <button class="back-btn" onclick="goBack()" aria-label="Back to dashboard">⬅ Back</button>
   </div>
-<script>
-function startTypingEffect(elementId, text, speed = 30) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
 
-    element.innerHTML = "";  // Clear old content
-    let index = 0;
+  <!-- Image Generator -->
+  <div id="image-section" class="feature-section glass-card" aria-hidden="true">
+    <h2>🖼 AI Image Generator</h2>
+    <input id="img-prompt" placeholder="Enter prompt..." aria-label="Prompt for image generation" />
+    <button id="generate-btn" class="glass-btn" onclick="generateImage()" aria-label="Generate image">Generate Image</button>
+    <div class="error-message" id="img-error"></div>
+    <div id="image-result" class="output" style="min-height: 250px; display:flex; justify-content:center; align-items:center;">
+      <div class="image-loader" style="display:none;">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Generating image...</div>
+      </div>
+    </div>
+    <div id="result-meta" style="display:none; justify-content:center; gap:10px; margin-top:10px;">
+      <button id="download-btn" class="glass-btn" aria-label="Download image">⬇ Download</button>
+      <button id="open-btn" class="glass-btn" aria-label="Open image in new tab">🔗 Open</button>
+    </div>
+    <button class="back-btn" onclick="goBack()" aria-label="Back to dashboard">⬅ Back</button>
+  </div>
 
-    const cursor = document.createElement("span");
-    cursor.classList.add("typing-cursor");
-    cursor.innerHTML = "|";
-    element.appendChild(cursor);
-
-    function typeChar() {
-        if (index < text.length) {
-            cursor.insertAdjacentText("beforebegin", text.charAt(index));
-            index++;
-            setTimeout(typeChar, speed);
-        } else {
-            cursor.classList.add("done"); // Stop cursor blinking after finishing
-        }
-    }
-    typeChar();
-}
-
-startTypingEffect("test-output", "Hello, this is a typing animation!", 50);
-</script>
-
-  <!-- Scripts -->
   <script src="script.js"></script>
-  <script src="typing.js"></script>
- 
-  <script src="app.js"></script>
 </body>
 <footer>
-  <p class="footer-text">© 2024 KIDO AI. All rights reserved.</p>
+  <p class="footer-text">© 2025 KIDO AI. All rights reserved.</p>
 </footer>
 </html>
-
-
-
-
