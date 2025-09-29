@@ -1,244 +1,409 @@
-//  KIDO AI Frontend Script (Updated)
-//  Connected to KIDO Backend (OpenAI + Gemini)
-// =====================================
+const API_URL = "https://kido-ai-952519942620.asia-south1.run.app/generate-content";
 
-// Backend API URL
-const backendURL = "https://kido-backend-952519942620.asia-south1.run.app/generate-content";
+// Helper: Sanitize Input
+function sanitizeInput(input) {
+  return input.replace(/[<>"'&]/g, "");
+}
 
+// Helper: Send Prompt to Backend
 async function realAIResponse(prompt) {
   try {
-    const res = await fetch(backendURL, {
+    const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt })
     });
-
     const data = await res.json();
-
-    // If backend returned an error message
-    if (data.result?.startsWith("⚠ Backend error") || data.result?.startsWith("⚠ Could not")) {
-      return data.result;
-    }
-
-    // Simply return the AI response text
-    return data.result;
-
+    return data.result || "⚠ No response from AI.";
   } catch (err) {
     console.error("❌ AI request failed:", err);
     return "⚠ Could not reach backend!";
   }
 }
 
+// Typing Effect
+function startTypingEffect(elementId, text, speed = 30) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
 
-// 🌍 Language detection
-function detectLanguage(text) {
-  const telugu = /[\u0C00-\u0C7F]/;
-  const hindi = /[\u0900-\u097F]/;
-  const tamil = /[\u0B80-\u0BFF]/;
-  const kannada = /[\u0C80-\u0CFF]/;
-  const malayalam = /[\u0D00-\u0D7F]/;
-  const bengali = /[\u0980-\u09FF]/;
-  const gujarati = /[\u0A80-\u0AFF]/;
-  const punjabi = /[\u0A00-\u0A7F]/;
-  const urdu = /[\u0600-\u06FF]/;
+  element.innerHTML = "";
+  let index = 0;
+  const cursor = document.createElement("span");
+  cursor.classList.add("typing-cursor");
+  cursor.innerHTML = "|";
+  element.appendChild(cursor);
 
-  if (telugu.test(text)) return { lang: "Telugu", code: "te-IN" };
-  if (hindi.test(text)) return { lang: "Hindi", code: "hi-IN" };
-  if (tamil.test(text)) return { lang: "Tamil", code: "ta-IN" };
-  if (kannada.test(text)) return { lang: "Kannada", code: "kn-IN" };
-  if (malayalam.test(text)) return { lang: "Malayalam", code: "ml-IN" };
-  if (bengali.test(text)) return { lang: "Bengali", code: "bn-IN" };
-  if (gujarati.test(text)) return { lang: "Gujarati", code: "gu-IN" };
-  if (punjabi.test(text)) return { lang: "Punjabi", code: "pa-IN" };
-  if (urdu.test(text)) return { lang: "Urdu", code: "ur-IN" };
-
-  return { lang: "English", code: "en-US" };
+  function typeChar() {
+    if (index < text.length) {
+      cursor.insertAdjacentText("beforebegin", text.charAt(index));
+      index++;
+      setTimeout(typeChar, speed);
+    } else {
+      cursor.classList.add("done");
+    }
+  }
+  typeChar();
 }
 
-// Show selected feature
+// Feature Navigation
 function openFeature(featureId) {
   document.getElementById("dashboard").style.display = "none";
-  document.querySelectorAll(".feature-section").forEach(sec => sec.style.display = "none");
-  document.getElementById(featureId).style.display = "block";
+  document.querySelectorAll(".feature-section").forEach(sec => {
+    sec.style.display = "none";
+    sec.setAttribute("aria-hidden", "true");
+  });
+  const section = document.getElementById(featureId);
+  section.style.display = "block";
+  section.setAttribute("aria-hidden", "false");
+  section.classList.add("visible");
+  localStorage.setItem("recentFeature", featureId.split("-")[0]);
+  loadSuggestions();
 }
 
 function goBack() {
   document.getElementById("dashboard").style.display = "block";
-  document.querySelectorAll(".feature-section").forEach(sec => sec.style.display = "none");
+  document.querySelectorAll(".feature-section").forEach(sec => {
+    sec.style.display = "none";
+    sec.setAttribute("aria-hidden", "true");
+  });
 }
 
-// 1️⃣ Content Generator
+// AI Suggestions
+function loadSuggestions() {
+  const recent = localStorage.getItem("recentFeature") || "Content Generator";
+  document.getElementById("suggestion-text").innerText = `Based on your usage: Try ${recent} again or explore new tools!`;
+}
+
+// Dark Mode Toggle
+function toggleDarkMode() {
+  document.body.classList.toggle("light-mode");
+  document.body.classList.toggle("dark-mode");
+  const mode = document.body.classList.contains("dark-mode") ? "dark" : "light";
+  localStorage.setItem("mode", mode);
+  document.querySelector(".mode-toggle i").classList.toggle("fa-moon");
+  document.querySelector(".mode-toggle i").classList.toggle("fa-sun");
+}
+
+// Sidebar Collapse
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("collapsed");
+}
+
+// Gesture Navigation
+let touchStartX = 0;
+document.addEventListener("touchstart", e => touchStartX = e.changedTouches[0].screenX);
+document.addEventListener("touchend", e => {
+  const touchEndX = e.changedTouches[0].screenX;
+  if (touchEndX - touchStartX > 100) {
+    goBack();
+  }
+});
+
+// Canvas Animation
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const particles = [];
+for (let i = 0; i < 100; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 2 + 1,
+    vx: Math.random() * 2 - 1,
+    vy: Math.random() * 2 - 1
+  });
+}
+
+function animateCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0, 245, 255, 0.5)";
+    ctx.fill();
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+  });
+  requestAnimationFrame(animateCanvas);
+}
+animateCanvas();
+
+// Content Generator
 async function generateContentGenerator() {
-  const topic = document.getElementById("cg-topic").value.trim();
-  const grade = document.getElementById("cg-grade").value.trim();
+  const topic = sanitizeInput(document.getElementById("cg-topic").value.trim());
+  const grade = sanitizeInput(document.getElementById("cg-grade").value.trim());
+  const language = document.getElementById("cg-language").value.trim();
   const outputDiv = document.getElementById("cg-output");
+  const errorDiv = document.getElementById("cg-error");
 
   if (!topic || !grade) {
-    alert("Please enter topic and grade!");
+    errorDiv.innerText = "Please enter topic and grade!";
+    errorDiv.style.display = "block";
     return;
   }
 
-  outputDiv.innerText = "⏳ Generating content...";
-  const { lang } = detectLanguage(topic);
+  errorDiv.style.display = "none";
+  outputDiv.innerHTML = '<div class="image-loader"><div class="loader-spinner"></div><div class="loader-text">Generating content...</div></div>';
 
-  const prompt = `Generate a Grade ${grade} lesson about "${topic}". Respond ONLY in ${lang} language.`;
-  const result = await realAIResponse(prompt);
-  outputDiv.innerText = result;
+  const prompt = `Generate ${language} lesson content for grade ${grade} about ${topic}`;
+  try {
+    const result = await realAIResponse(prompt);
+    startTypingEffect("cg-output", result, 30);
+  } catch (err) {
+    errorDiv.innerText = "⚠ Failed to generate content. Please try again.";
+    errorDiv.style.display = "block";
+    outputDiv.innerText = "";
+  }
 }
 
-// 2️⃣ Worksheet Creator
+// Worksheet Creator
 async function generateWorksheet() {
-  const topic = document.getElementById("ws-topic").value.trim();
-  const grade = document.getElementById("ws-grade").value.trim();
-  const questions = document.getElementById("ws-questions").value.trim();
+  const topic = sanitizeInput(document.getElementById("ws-topic").value.trim());
+  const grade = sanitizeInput(document.getElementById("ws-grade").value.trim());
+  const questions = sanitizeInput(document.getElementById("ws-questions").value.trim());
   const outputDiv = document.getElementById("ws-output");
+  const errorDiv = document.getElementById("ws-error");
 
   if (!topic || !grade || !questions) {
-    alert("Please enter topic, grade, and number of questions!");
+    errorDiv.innerText = "Please enter topic, grade, and number of questions!";
+    errorDiv.style.display = "block";
     return;
   }
 
-  outputDiv.innerText = "⏳ Creating worksheet...";
-  const { lang } = detectLanguage(topic);
+  errorDiv.style.display = "none";
+  outputDiv.innerHTML = '<div class="image-loader"><div class="loader-spinner"></div><div class="loader-text">Creating worksheet...</div></div>';
 
-  const prompt = `Create a ${questions}-question worksheet for grade ${grade} on "${topic}". Respond ONLY in ${lang} language.`;
-  const result = await realAIResponse(prompt);
-  outputDiv.innerText = result;
+  const prompt = `Create a ${questions}-question worksheet for grade ${grade} on ${topic}`;
+  try {
+    const result = await realAIResponse(prompt);
+    startTypingEffect("ws-output", result, 30);
+  } catch (err) {
+    errorDiv.innerText = "⚠ Failed to create worksheet. Please try again.";
+    errorDiv.style.display = "block";
+    outputDiv.innerText = "";
+  }
 }
 
-// 3️⃣ Knowledge Base + Search
+// Knowledge Base
 async function generateKnowledgeBase() {
-  const question = document.getElementById("kb-question").value.trim();
+  const question = sanitizeInput(document.getElementById("kb-question").value.trim());
   const outputDiv = document.getElementById("kb-output");
+  const errorDiv = document.getElementById("kb-error");
 
   if (!question) {
-    alert("Please enter a question!");
+    errorDiv.innerText = "Please enter a question!";
+    errorDiv.style.display = "block";
     return;
   }
 
-  outputDiv.innerText = "⏳ Searching knowledge base...";
-  const { lang } = detectLanguage(question);
+  errorDiv.style.display = "none";
+  outputDiv.innerHTML = '<div class="image-loader"><div class="loader-spinner"></div><div class="loader-text">Searching knowledge base...</div></div>';
 
-  const prompt = `Answer the following question in ${lang} language only: ${question}`;
-  const result = await realAIResponse(prompt);
-  outputDiv.innerText = result;
+  const prompt = `Answer the following question: ${question}`;
+  try {
+    const result = await realAIResponse(prompt);
+    startTypingEffect("kb-output", result, 30);
+  } catch (err) {
+    errorDiv.innerText = "⚠ Failed to retrieve answer. Please try again.";
+    errorDiv.style.display = "block";
+    outputDiv.innerText = "";
+  }
 }
 
-// 4️⃣ Visual Aid Designer
+// Visual Aid Designer
 async function generateVisualAid() {
-  const topic = document.getElementById("va-topic").value.trim();
+  const topic = sanitizeInput(document.getElementById("va-topic").value.trim());
   const outputDiv = document.getElementById("va-output");
+  const errorDiv = document.getElementById("va-error");
 
   if (!topic) {
-    alert("Please enter a topic!");
+    errorDiv.innerText = "Please enter a topic!";
+    errorDiv.style.display = "block";
     return;
   }
 
-  outputDiv.innerText = "🎨 Generating visual idea...";
-  const { lang } = detectLanguage(topic);
+  errorDiv.style.display = "none";
+  outputDiv.innerHTML = '<div class="image-loader"><div class="loader-spinner"></div><div class="loader-text">Generating visual idea...</div></div>';
 
-  const prompt = `Describe a simple visual aid for "${topic}". Respond ONLY in ${lang}.`;
-  const result = await realAIResponse(prompt);
-  outputDiv.innerText = result;
+  const prompt = `Describe a simple visual aid for: ${topic}`;
+  try {
+    const result = await realAIResponse(prompt);
+    startTypingEffect("va-output", result, 30);
+  } catch (err) {
+    errorDiv.innerText = "⚠ Failed to generate visual aid. Please try again.";
+    errorDiv.style.display = "block";
+    outputDiv.innerText = "";
+  }
 }
 
-// 5️⃣ Reading Assessment (Speech)
+// Reading Assessment
 let speechSynthesisUtterance = null;
+let isPaused = false;
 
 async function generateReadingAssessment() {
-  const topic = document.getElementById("ra-topic").value.trim();
+  const topic = sanitizeInput(document.getElementById("ra-topic").value.trim());
+  const lang = document.getElementById("ra-lang").value.trim() || "en-US";
   const voiceType = document.getElementById("ra-voice").value;
-  const volumeInput = document.getElementById("ra-volume");
-  const volume = volumeInput ? parseFloat(volumeInput.value) : 1;
+  const volume = parseFloat(document.getElementById("ra-volume").value) || 1;
   const outputDiv = document.getElementById("ra-output");
+  const errorDiv = document.getElementById("ra-error");
 
   if (!topic) {
-    alert("Please enter a topic!");
+    errorDiv.innerText = "Please enter a topic!";
+    errorDiv.style.display = "block";
     return;
   }
 
-  outputDiv.innerText = "⏳ Preparing reading assessment...";
-  const { lang, code } = detectLanguage(topic);
+  errorDiv.style.display = "none";
+  outputDiv.innerHTML = '<div class="image-loader"><div class="loader-spinner"></div><div class="loader-text">Preparing reading assessment...</div></div>';
 
-  const prompt = `Generate a short reading passage for topic "${topic}". Respond ONLY in ${lang}.`;
-  const text = await realAIResponse(prompt);
-  outputDiv.innerText = text;
+  const prompt = `Generate a short reading passage for topic: ${topic}`;
+  try {
+    const text = await realAIResponse(prompt);
+    startTypingEffect("ra-output", text, 30);
 
-  // Cancel ongoing speech
-  speechSynthesis.cancel();
+    speechSynthesis.cancel();
+    speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
+    speechSynthesisUtterance.lang = lang;
+    speechSynthesisUtterance.volume = volume;
 
-  // Setup speech synthesis
-  speechSynthesisUtterance = new SpeechSynthesisUtterance(text);
-  speechSynthesisUtterance.lang = code;
-  speechSynthesisUtterance.volume = volume;
+    let voices = speechSynthesis.getVoices();
+    if (!voices.length) {
+      await new Promise(resolve => {
+        speechSynthesis.onvoiceschanged = () => {
+          voices = speechSynthesis.getVoices();
+          resolve();
+        };
+      });
+    }
 
-  let voices = speechSynthesis.getVoices();
-  if (!voices.length) {
-    await new Promise(resolve => {
-      speechSynthesis.onvoiceschanged = () => {
-        voices = speechSynthesis.getVoices();
-        resolve();
-      };
-    });
+    if (voiceType === "female") {
+      const femaleVoice = voices.find(v => /female/i.test(v.name) || v.name.toLowerCase().includes("zira"));
+      if (femaleVoice) speechSynthesisUtterance.voice = femaleVoice;
+    } else {
+      const maleVoice = voices.find(v => /male/i.test(v.name) || v.name.toLowerCase().includes("david"));
+      if (maleVoice) speechSynthesisUtterance.voice = maleVoice;
+    }
+
+    speechSynthesis.speak(speechSynthesisUtterance);
+    document.querySelector(".voice-controls").style.display = "flex";
+    document.querySelector(".waveform").style.display = "flex";
+  } catch (err) {
+    errorDiv.innerText = "⚠ Failed to generate reading passage. Please try again.";
+    errorDiv.style.display = "block";
+    outputDiv.innerText = "";
   }
-
-  if (voiceType === "female") {
-    const femaleVoice = voices.find(v => /female/i.test(v.name) || v.name.toLowerCase().includes("zira"));
-    if (femaleVoice) speechSynthesisUtterance.voice = femaleVoice;
-  } else {
-    const maleVoice = voices.find(v => /male/i.test(v.name) || v.name.toLowerCase().includes("david"));
-    if (maleVoice) speechSynthesisUtterance.voice = maleVoice;
-  }
-
-  speechSynthesis.speak(speechSynthesisUtterance);
-  document.querySelector(".voice-controls").style.display = "flex";
-  document.querySelector(".waveform").style.display = "flex";
 }
 
 function toggleSpeech() {
-  if (!speechSynthesis.speaking && !speechSynthesis.paused) return;
+  if (!speechSynthesisUtterance) return;
 
-  if (!speechSynthesis.paused) {
+  if (!isPaused) {
     speechSynthesis.pause();
     document.getElementById("ra-toggle").innerText = "▶ Resume";
   } else {
     speechSynthesis.resume();
     document.getElementById("ra-toggle").innerText = "⏸ Pause";
   }
+  isPaused = !isPaused;
 }
 
 function stopSpeech() {
-  if (speechSynthesis.speaking || speechSynthesis.paused) {
-    speechSynthesis.cancel();
-  }
+  speechSynthesis.cancel();
+  isPaused = false;
   document.getElementById("ra-toggle").innerText = "⏸ Pause";
   document.querySelector(".voice-controls").style.display = "none";
   document.querySelector(".waveform").style.display = "none";
 }
 
-// 6️⃣ Lesson Planner
+// Lesson Planner
 async function generateLessonPlanner() {
-  const grade = document.getElementById("lp-grade").value.trim();
-  const subject = document.getElementById("lp-subject").value.trim();
+  const grade = sanitizeInput(document.getElementById("lp-grade").value.trim());
+  const subject = sanitizeInput(document.getElementById("lp-subject").value.trim());
   const outputDiv = document.getElementById("lp-output");
+  const errorDiv = document.getElementById("lp-error");
 
   if (!grade || !subject) {
-    alert("Please enter grade and subject!");
+    errorDiv.innerText = "Please enter grade and subject!";
+    errorDiv.style.display = "block";
     return;
   }
 
-  outputDiv.innerText = "⏳ Generating lesson plan...";
-  const { lang } = detectLanguage(subject);
+  errorDiv.style.display = "none";
+  outputDiv.innerHTML = '<div class="image-loader"><div class="loader-spinner"></div><div class="loader-text">Generating lesson plan...</div></div>';
 
-  const prompt = `Create a weekly lesson plan for grade ${grade} in "${subject}". Respond ONLY in ${lang}.`;
-  const result = await realAIResponse(prompt);
-  outputDiv.innerText = result;
+  const prompt = `Create a weekly lesson plan for grade ${grade} in ${subject}`;
+  try {
+    const result = await realAIResponse(prompt);
+    startTypingEffect("lp-output", result, 30);
+  } catch (err) {
+    errorDiv.innerText = "⚠ Failed to generate lesson plan. Please try again.";
+    errorDiv.style.display = "block";
+    outputDiv.innerText = "";
+  }
 }
 
-// Fade effect on unload
+// Image Generator (Placeholder)
+async function generateImage() {
+  const prompt = sanitizeInput(document.getElementById("img-prompt").value.trim());
+  const outputDiv = document.getElementById("image-result");
+  const errorDiv = document.getElementById("img-error");
+  const metaDiv = document.getElementById("result-meta");
+
+  if (!prompt) {
+    errorDiv.innerText = "Please enter a prompt!";
+    errorDiv.style.display = "block";
+    return;
+  }
+
+  errorDiv.style.display = "none";
+  outputDiv.innerHTML = '<div class="image-loader"><div class="loader-spinner"></div><div class="loader-text">Generating image...</div></div>';
+  metaDiv.style.display = "none";
+
+  try {
+    // Placeholder: Replace with actual image generation API
+    const res = await fetch("https://kido-ai-952519942620.asia-south1.run.app/generate-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if (data.imageUrl) {
+      outputDiv.innerHTML = `<img src="${data.imageUrl}" alt="Generated Image" style="max-width: 100%; border-radius: 8px;" />`;
+      metaDiv.style.display = "flex";
+      document.getElementById("download-btn").onclick = () => {
+        const link = document.createElement("a");
+        link.href = data.imageUrl;
+        link.download = "generated-image.png";
+        link.click();
+      };
+      document.getElementById("open-btn").onclick = () => window.open(data.imageUrl, "_blank");
+    } else {
+      outputDiv.innerText = "⚠ No image generated.";
+    }
+  } catch (err) {
+    errorDiv.innerText = "⚠ Failed to generate image. Please try again.";
+    errorDiv.style.display = "block";
+    outputDiv.innerText = "";
+  }
+}
+
+// Initialize
+document.addEventListener("DOMContentLoaded", () => {
+  const savedMode = localStorage.getItem("mode") || "dark";
+  document.body.classList.add(savedMode + "-mode");
+  if (savedMode === "light") {
+    document.querySelector(".mode-toggle i").classList.replace("fa-moon", "fa-sun");
+  }
+  loadSuggestions();
+});
+
+// Cleanup
 window.addEventListener("beforeunload", () => {
   document.body.style.opacity = "0";
 });
-
-
-
