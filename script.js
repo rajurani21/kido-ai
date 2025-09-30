@@ -8,7 +8,7 @@ function sanitizeInput(input) {
 // Helper: Send Prompt to Backend
 async function realAIResponse(prompt) {
   try {
-    const res = await fetch(API_URL, {
+    const res = await fetch(backendURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt })
@@ -407,4 +407,5 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("beforeunload", () => {
   document.body.style.opacity = "0";
 });
+
 
