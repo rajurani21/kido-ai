@@ -1,4 +1,4 @@
-const API_URL = "https://kido-ai-797989395382.asia-south1.run.app/generate-content";
+const API_URL = "https://kido-backend-952519942620.asia-south1.run.app/generate-content";
 
 async function generateContent() {
   const userPrompt = prompt("Enter your teaching idea:");
@@ -19,3 +19,4 @@ async function generateContent() {
     alert("❌ Error connecting to server.");
   }
 }
+
