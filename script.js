@@ -1,4 +1,4 @@
-const backendURL = "https://kido-ai-952519942620.asia-south1.run.app/generate-content";
+const backendURL = "https://kido-backend-952519942620.asia-south1.run.app/generate-content";
 
 // Helper: Sanitize Input
 function sanitizeInput(input) {
@@ -408,6 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener("beforeunload", () => {
   document.body.style.opacity = "0";
 });
+
 
 
 
